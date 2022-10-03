@@ -9,6 +9,7 @@ from models.recording import Recording
 from schemas import user_schemas, info
 from auth.jwt_helper import get_current_user
 from schemas.raw_text import RawText
+from schemas.status import Status
 
 router = APIRouter(prefix=f"{os.getenv('ROOT_PATH')}/v1", tags=["Samples"])
 
@@ -65,14 +66,30 @@ async def get_unrecorded_sample(
     return {'sample': sample}
 
 
+@router.get("/status",
+            status_code=status.HTTP_200_OK,
+            response_model=Status)
+async def get_status(db: Session = Depends(get_db),
+                     current_user: user_schemas.User = Depends(get_current_user)):
+    dur = current_user.total_duration
+
+    all_samples = len(db.query(Recording).filter(Recording.user_id == current_user.id).all())
+    unrecorded_samples = len(db.query(Recording).filter(Recording.user_id == current_user.id,
+                                                  Recording.is_recorded.is_(None)).all())
+
+    recorded_samples = all_samples - unrecorded_samples
+
+    return {"duration": dur, "all_samples": all_samples, "unrecorded_samples": unrecorded_samples, "recorded_samples":recorded_samples}
+
+
 @router.delete(
     "/sample/{id}",
     status_code=status.HTTP_200_OK,
     response_model=info.Info)
 async def delete_sample(
+        id: int,
         db: Session = Depends(get_db),
-        current_user: user_schemas.User = Depends(get_current_user),
-        id: int = 1
+        current_user: user_schemas.User = Depends(get_current_user)
 ):
     db.query(Sample).filter(Sample.id == id).delete()
     db.commit()
