@@ -1,0 +1,42 @@
+.status {
+    display: flex;
+    flex-wrap: wrap;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    width: 80%;
+    padding: 2.5rem 5rem;
+
+    background-color: #2a2b38;
+    background-image: url(./../../assets/formBackground.svg);
+    background-position: bottom center;
+    background-size: 200%;
+
+    border: 0.1rem solid #ffeba7;
+    box-shadow: 0 8px 24px 0 rgba(255, 235, 167, 0.3);
+}
+
+.status__item {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    
+    width: 30%;
+    margin: 1rem;
+    padding: 1rem;
+}
+
+.item__title {
+    margin-bottom: 0.5rem;
+
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.item__results {
+    font-size: 1.5rem;
+}

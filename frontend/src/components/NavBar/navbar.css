@@ -1,0 +1,63 @@
+.navBar {
+    display: flex;
+    font-size: 1.5rem;
+    padding: 1rem;
+    background-color: #2a2b38;
+    background-image: url(./../../assets/formBackground.svg);
+    background-position: bottom center;
+    background-size: 100%;
+
+    border-bottom: 0.1rem solid #ffeba7;
+}
+
+.navBar__title {
+    text-align: center;
+    cursor: pointer;
+
+    font-size: 2rem;
+}
+
+.navBar__link {
+    color: #ffeba7;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.navBar__img--wrapper {
+    display: flex;
+    align-items: center;
+    margin-left: 2rem;
+}
+
+.navBar__list {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-grow: 1;
+    margin-right: 2rem;
+    list-style: none;
+}
+
+.list__item {
+  padding: 1.5rem;
+  cursor: pointer;
+}
+
+.list__item:hover {
+    border-radius: 2rem;
+    background-color: #102770;
+    color: #ffeba7;
+    box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
+}
+
+.sign--in--out {
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    border: 0.1rem solid #ffeba7;
+    border-radius: 1rem;
+    margin-left: 2.5rem;
+}
+
+.sign--in--out:hover {
+    background-color: #102770;
+}
