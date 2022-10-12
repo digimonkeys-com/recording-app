@@ -166,3 +166,7 @@ fabric.properties
 .docker-compose.yml.swo
 .docker-compose.yml.un~
 .Dockerfile.un~
+db-data/
+dhparam/
+certbot/
+front/
