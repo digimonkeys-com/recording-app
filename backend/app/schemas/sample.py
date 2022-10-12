@@ -1,6 +1,6 @@
 from .helpers import BaseConfig
 
 
-class Info(BaseConfig):
+class UnrecordedSample(BaseConfig):
     transcription: str
     id: int

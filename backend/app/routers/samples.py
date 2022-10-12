@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status, Depends, HTTPException
 from db.database import get_db
 from sqlalchemy.orm import Session
 import os
@@ -10,6 +10,7 @@ from schemas import user_schemas, info
 from auth.jwt_helper import get_current_user
 from schemas.raw_text import RawText
 from schemas.status import Status
+from schemas.sample import UnrecordedSample
 
 router = APIRouter(prefix=f"{os.getenv('ROOT_PATH')}/v1", tags=["Samples"])
 
@@ -50,6 +51,7 @@ async def add_samples(
 @router.get(
     "/sample",
     status_code=status.HTTP_200_OK,
+    response_model = UnrecordedSample
 
 )
 async def get_unrecorded_sample(
@@ -60,6 +62,12 @@ async def get_unrecorded_sample(
         Recording.user_id == current_user.id,
         Recording.is_recorded.is_(None)
     ).first()
+
+    if not record:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="There is no unrecorded sample left."
+        )
 
     sample = db.query(Sample).filter(Sample.id == record.sample_id).first()
 
