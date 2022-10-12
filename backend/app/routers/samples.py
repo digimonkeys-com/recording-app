@@ -70,8 +70,7 @@ async def get_unrecorded_sample(
         )
 
     sample = db.query(Sample).filter(Sample.id == record.sample_id).first()
-
-    return {'sample': sample}
+    return {"id" : sample.id, "transcription": sample.transcription}
 
 
 @router.get("/status",
