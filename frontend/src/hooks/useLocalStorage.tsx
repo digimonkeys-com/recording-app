@@ -1,9 +1,6 @@
-interface SignedInUserData {
-  access_token: string;
-  user_id: number
-}
+import { SignedInUserData } from "../types/types";
 
-const useLocalStorage = (): any => {
+const useLocalStorage = () => {
   const setLocalStorage = (signedInUserData: SignedInUserData): void =>
     window.localStorage.setItem('signedInUserData', JSON.stringify(signedInUserData));
 

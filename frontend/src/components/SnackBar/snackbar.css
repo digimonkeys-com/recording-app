@@ -1,0 +1,61 @@
+.snackbar {
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    position: absolute;
+    left: 50%;
+    top: 5%;
+    transform: translate(-50%, -50%);
+
+    width: 350px;
+    height: 60px;
+
+    border-radius: 8px;
+
+    font-size: 1.5rem;
+    color: black;
+}
+
+.snackbar__symbol {
+    flex: 20%;
+    font-weight: bold;
+}
+
+.snackbar__description {
+    flex: 80%;
+    text-align: start;
+
+    font-weight: bold;
+}
+
+#show {
+    visibility: visible;
+    animation: fadeIn 0.5s, fadeOut 0.5s 2.5s;
+}
+
+#hide {
+    visibility: hidden;
+}
+
+@keyframes fadeIn {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 3rem;
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        bottom: 3rem;
+        opacity: 1;
+    }
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}

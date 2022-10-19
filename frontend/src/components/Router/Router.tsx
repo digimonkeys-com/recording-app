@@ -1,15 +1,12 @@
 import * as React from 'react';
 
-interface RouteProps {
-    path: string;
-    children: JSX.Element | any;
-}
+import { RouteProps } from '../../types/types';
 
-const Route = ( { path, children }:RouteProps ): JSX.Element => {
+const Route = ( { path, children }: RouteProps ): JSX.Element => {
     const [currentPath, setCurrentPath] = React.useState(window.location.pathname);
 
     React.useEffect(() => {
-        const onLocationChange = () => {
+        const onLocationChange = (): void => {
             setCurrentPath(window.location.pathname)
         }
 
@@ -19,7 +16,6 @@ const Route = ( { path, children }:RouteProps ): JSX.Element => {
             window.removeEventListener('popstate', onLocationChange)
         }
     },[])
-
 
     return currentPath === path ? children : null;
 }

@@ -16,9 +16,11 @@
 }
 
 .recording__textarea {
-    width: 80%;
+    min-width: 30%;
+    max-width: 60%;
 
-    border: 1px solid yellow;
+    margin-top: 3rem;
+    border: 1px solid #ffeba7;
     border-radius: 2rem;
 }
 
@@ -32,7 +34,13 @@
     /* word-break: break-all; */
 }
 
+.recording__button--wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .recording__button {
-    margin-top: 2rem;
+    margin: 4rem 2rem;
     width: 50px;
 }

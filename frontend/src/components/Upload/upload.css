@@ -1,3 +1,8 @@
+.upload-wrap {
+  margin-top: 2rem;
+  text-align: center;
+}
+
 .upload__button {
     border-radius: 4px;
     height: 44px;

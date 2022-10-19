@@ -1,11 +1,16 @@
-import React from 'react';
-
-import Link from '../Form/Link/Link';
+import Link from './Link/Link';
 import Logo from '../../assets/logo.png'
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 import './navbar.css'
 
 const NavBar = (): JSX.Element => {
+    const { getLocalStorage } = useLocalStorage();
+    const { access_token } = getLocalStorage() || {};
+
+    const handleSignOut = () => {
+        window.localStorage.clear();
+    }
 
     return (
         <header className='navBar'>
@@ -30,9 +35,9 @@ const NavBar = (): JSX.Element => {
                         Status
                     </Link>
                 </li>
-                <li className='sign--in--out'>
+                <li className='sign--in--out' onClick={ access_token ? handleSignOut : null}>
                     <Link className='navBar__link' href='/sign-in'>
-                        SignIn
+                        {access_token ? 'Sign Out' : 'Sign In'}
                     </Link>
                 </li>
             </ul>

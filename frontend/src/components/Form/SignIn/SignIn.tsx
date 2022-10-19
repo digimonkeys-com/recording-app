@@ -1,10 +1,14 @@
 import React from 'react';
 
+import { SignInProps } from '../../../types/types'
 import useLocalStorage from '../../../hooks/useLocalStorage';
+import useFetch from '../../../hooks/useFetch'
 
-const SignIn = (): JSX.Element => {
+const SignIn = (props: SignInProps): JSX.Element => {
     const [navigate, setNavigate] = React.useState(false)
+    const { userSignIn } = useFetch();
     const { setLocalStorage } = useLocalStorage()
+    const { showSnackBar } = props;
 
     React.useEffect( () => {
         if(navigate) {
@@ -14,7 +18,7 @@ const SignIn = (): JSX.Element => {
         }
     },[navigate])
 
-    const userSignIn = () => {
+    const handleSubmit = async (): Promise<void> => {
         const email = ( document.querySelector('#signIn-email') as HTMLInputElement ).value;
         const password = ( document.querySelector('#signIn-password') as HTMLInputElement ).value;
 
@@ -22,21 +26,11 @@ const SignIn = (): JSX.Element => {
         userData.append('username', email);
         userData.append('password', password);
 
-        return fetch('http://localhost:8000/api/v1/login', { method: 'POST', body: userData, headers: { 'ContentType': 'application/x-www-form-urlencoded' } })
-            .then((resp) => {
-                if (resp.ok) {
-                    return resp.json();
-                }
-                return Promise.reject(resp);
-            })
-            .catch((err) => {
-                console.log('error' , err)
-            });
-    }
+        const signedInUserData = await userSignIn(userData)
 
-    const handleSubmit = async (): Promise<void> => {
-
-        const signedInUserData = await userSignIn()
+        if(!signedInUserData) {
+            showSnackBar();
+        }
 
         if(signedInUserData) {
             setLocalStorage(signedInUserData);
@@ -70,7 +64,7 @@ const SignIn = (): JSX.Element => {
                         />
                             <i className="input__icon input__icon--second"></i>
                     </div>
-                    <button className="signIn__button" onClick={handleSubmit}>submit</button>
+                    <button className="signIn__button" onClick={handleSubmit}>Submit</button>
                     <a href="#" className="signIn__link">Forgot your password?</a>
             </div>
         </div>

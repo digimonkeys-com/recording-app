@@ -1,43 +1,25 @@
 import React from 'react';
 
+import { StatusData } from '../../types/types';
 import NavBar from '../NavBar/NavBar';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import useFetch from '../../hooks/useFetch';
 
 import './status.css';
 
-interface Status {
-    duration: number;
-    all_samples: number;
-    unrecorded_samples: number;
-    recorded_samples: number;
-}
-
 const Status = (): JSX.Element => {
-    const [ status, setStatus ] = React.useState<Status>(null);
-    const { getLocalStorage } = useLocalStorage();
-    const { access_token } = getLocalStorage()
+    const [ status, setStatus ] = React.useState<StatusData>(null);
+    const { getStatus } = useFetch();
 
     const { duration, all_samples, unrecorded_samples, recorded_samples } = status || {};
     const totalSamples = ( recorded_samples / all_samples ) * 100 || 0;
 
     React.useEffect( () => {
-        getStatus();
+        const setNewStatus = async () => {
+            const newStatus = await getStatus();
+            newStatus && setStatus(newStatus)
+        };
+        setNewStatus();
     },[])
-
-    const getStatus = (): Promise<void> => {
-
-        return fetch('http://localhost:8000/api/v1/status', { method: 'GET', headers: { Authorization: `Bearer ${access_token}` } })
-            .then((resp) => {
-                if (resp.ok) {
-                    return resp.json();
-                }
-                return Promise.reject(resp);
-            })
-            .then( resp => setStatus(resp) )
-            .catch((err) => {
-                console.log('error' , err)
-            });
-    }
 
     return (
         <>

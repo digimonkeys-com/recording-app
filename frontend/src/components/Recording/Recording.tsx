@@ -2,57 +2,50 @@ import React from 'react'
 
 import NavBar from '../NavBar/NavBar';
 import Microphone from '../../assets/microphone.svg'
-
-import useLocalStorage from '../../hooks/useLocalStorage';
+import PlayIcon from '../../assets/play.svg'
+import useMediaRecorder from '../../hooks/useMediaRecorder';
+import useFetch from '../../hooks/useFetch';
+import { SampleData } from '../../types/types';
 
 import './recording.css'
 
 const Recording = (): JSX.Element => {
-    const [sample, setSample] = React.useState<string>(null);
-    const { getLocalStorage } = useLocalStorage();
-
-    const { access_token } = getLocalStorage();
+    const [ sample, setSample ] = React.useState<SampleData>(null);
+    const [ isRecording, setIsRecording ] = React.useState(true)
+    const [ playAudio, setPlayAudio ] = React.useState(true);
+    const { startRecording, stopRecording, playRecord, prepereRecord, clearMediaRecorderState } = useMediaRecorder();
+    const { getTextSample, sendRecord } = useFetch();
+    const { transcription, id } = sample || {};
 
     React.useEffect(() => {
-        getTextSample();
-    },[])
+        const setNewSample = async () => {
+            const newSample = await getTextSample();
+            newSample && setSample(newSample)
+        };
+        setNewSample();
+    },[]);
 
+    const handleRecording = async (): Promise<void> => {
+        isRecording ? startRecording() : stopRecording();
 
-    const recorder = () => {
-        if(!navigator.mediaDevices) return;
+        setIsRecording(!isRecording);
 
-        const constraints = { audio: true, video: false };
-        let chunks: any[] = [];
+        const preperedRecord = await prepereRecord();
 
-        navigator.mediaDevices.getUserMedia( constraints )
-            .then( (stream) => {
-                const mediaRecorder = new MediaRecorder(stream);
-                
-                mediaRecorder.addEventListener('dataavailable' , event => {
-                    const data = event.data;
-                })
-            })
-        
+        const recordData = new FormData();
+        recordData.append('id' , id.toString());
+        recordData.append('file' , preperedRecord);
+        recordData.append('browser' , 'chrome');
+
+        !isRecording && sendRecord(recordData) && clearMediaRecorderState();
     }
 
-    
-
-    recorder();
-
-    
-    const getTextSample = () => {
-        return fetch('http://localhost:8000/api/v1/sample', { method: 'GET', mode: 'no-cors', headers: { 'ContentType': 'application/json', Authorization: `Bearer ${access_token}` } })
-            .then((resp) => {
-                if (resp.ok) {
-                    return resp.json();
-                }
-                return Promise.reject(resp);
-            })
-            .then( resp => setSample(resp) )
-            .catch((err) => {
-                console.log('error' , err)
-            });
+    const handleRecordActions = (): void => {
+       playAudio && playRecord();
     }
+
+    const iconOn = 'invert(12%) sepia(72%) saturate(7500%) hue-rotate(96deg) brightness(96%) contrast(101%)';
+    const iconOff = 'invert(11%) sepia(76%) saturate(7498%) hue-rotate(344deg) brightness(105%) contrast(107%)';
 
     return (
         <div className='recording__wrap'>
@@ -60,18 +53,16 @@ const Recording = (): JSX.Element => {
             <main className='recording'>     
                 <div className='recording__textarea'>
                     <span className='textarea'>
-                        {/* { sample } */}
-                        Zawód pilota dał mi okazję do licznych spotkań z wieloma poważnymi ludźmi. Wiele czasu
-                        spędziłem z dorosłymi. Obserwowałem ich z bliska. Lecz to nie zmieniło mej opinii o nich. Gdy
-                        spotykałem dorosłą osobę, która wydawała mi się trochę mądrzejsza, robiłem na niej doświadczenie
-                        z moim rysunkiem numer 1, który stale nosiłem przy sobie. Chciałem wiedzieć, czy mam do czynienia
-                        z osobą rzeczywiście pojętną. Lecz za każdym razem odpowiadano mi: - To jest kapelusz. - Wobec
-                        tego nie rozmawiałem ani o wężach boa, ani o lasach dziewiczych, ani o gwiazdach. Starałem się być
-                        na poziomie mego rozmówcy.
+                      {transcription}
                     </span>
                 </div>
-                <div className='recording__button'>
-                    <img src={ Microphone } alt="microphone icon"></img>
+                <div className='recording__button--wrap'>
+                    <div className='recording__button' onClick={handleRecording} style={{ filter: isRecording ? iconOn : iconOff }}>
+                        <img src={ Microphone } alt="microphone icon"></img>
+                    </div>
+                    <div className='recording__button' onClick={handleRecordActions} style={{  filter: playAudio ? iconOn : iconOff }}>
+                        <img src={ PlayIcon } alt="microphone icon" onClick={() => setPlayAudio(!playAudio)}></img>
+                    </div>
                 </div>
             </main>
         </div>
