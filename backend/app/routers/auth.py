@@ -43,9 +43,9 @@ async def login_for_access_token(
     response_model=token_schemas.Token
 )
 async def register(
-        email: str = Form(''),
-        password: str = Form(''),
-        name: str = Form(''),
+        email: str = Form(),
+        password: str = Form(),
+        name: str = Form(),
         db: Session = Depends(get_db)
 ):
 
