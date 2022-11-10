@@ -59,8 +59,9 @@ def convert_to_wav_and_save_file(filepath: str, filename: str):
     for extension in extension_list:
         if filename.lower().endswith(extension):
             audio = AudioSegment.from_file(filepath + filename, extension)
+            new_audio = audio.set_frame_rate(frame_rate=16000)
             new_filename = f"{dir_}{filename.split('.')[0]}.wav"
-            audio.export(new_filename, format="wav")
+            new_audio.export(new_filename, format="wav")
             return new_filename
 
     os.remove(filepath + filename)
