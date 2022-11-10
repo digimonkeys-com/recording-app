@@ -1,6 +1,7 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 import soundfile as sf
 import librosa
+from pydub import AudioSegment
 
 import subprocess
 import os
@@ -47,3 +48,20 @@ def convert_and_save_file(id_: str, browser: str, file: bytes, user):
         
     os.remove(temp_file_location)
     return final_filename, final_file_location, duration
+
+
+def convert_to_wav_and_save_file(filepath: str, filename: str):
+    extension_list = ("mp4", "mp3", "m4a")
+    dir_ = f"data/"
+    if not os.path.exists(dir_):
+        os.mkdir(dir_)
+
+    for extension in extension_list:
+        if filename.lower().endswith(extension):
+            audio = AudioSegment.from_file(filepath + filename, extension)
+            new_filename = f"{dir_}{filename.split('.')[0]}.wav"
+            audio.export(new_filename, format="wav")
+            return new_filename
+
+    os.remove(filepath + filename)
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unsupported file extension.")
