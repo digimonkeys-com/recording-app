@@ -50,7 +50,6 @@ const Upload = (): JSX.Element => {
         <NavBar />
         <div className='upload-wrap'>
             <h1>UPLOAD</h1>
-            
             <div className="uploader">
                 <label className="uploader__label">
                     <input className="uploader__input" type="file" accept="text/csv, text/plain" onChange={readFile}/>

@@ -35,7 +35,7 @@ const useFetch = () => {
         const options = { 
             method: 'POST', 
             body: recordData, 
-            headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } 
+            headers: { Authorization: `Bearer ${access_token}` } 
         };
 
         return _fetch({additionalPath, options});
@@ -51,23 +51,21 @@ const useFetch = () => {
         return _fetch({ additionalPath, options });
     };
 
-    const userSignIn = (userData: FormData): Promise<SignInAndUpData> => {
+    const userSignIn = (userData: URLSearchParams): Promise<SignInAndUpData> => {
         const additionalPath = login;
         const options = { 
             method: 'POST', 
-            body: userData, 
-            headers: { 'ContentType': 'application/x-www-form-urlencoded' } 
+            body: userData,
         }
 
         return _fetch({ additionalPath, options })
     };
 
-    const userSignUp = (userData: FormData): Promise<SignInAndUpData> => {
+    const userSignUp = (userData: URLSearchParams): Promise<SignInAndUpData> => {
         const additionalPath = register;
         const options = { 
             method: 'PUT', 
-            body: userData, 
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' } 
+            body: userData,  
         }
 
         return _fetch({ additionalPath, options })

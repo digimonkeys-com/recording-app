@@ -24,28 +24,30 @@ const Status = (): JSX.Element => {
     return (
         <>
             <NavBar />
-            <section className='status'>
-                <div className='status__item'>
-                    <h3 className='item__title'>Total length of recordings</h3>
-                    <span className='item__results'>{duration}</span>
-                </div>
-                <div className='status__item'>
-                    <h3 className='item__title'>Number of recorded samples</h3>
-                    <span className='item__results'>{recorded_samples}</span>
-                </div>
-                <div className='status__item'>
-                    <h3 className='item__title'>Number of remaining samples</h3>
-                    <span className='item__results'>{unrecorded_samples}</span>
-                </div>
-                <div className='status__item'>
-                    <h3 className='item__title'>Total number of samples</h3>
+            <div className='status__wrap'>
+                <section className='status'>
+                    <div className='status__item'>
+                        <h3 className='item__title'>Total length of recordings</h3>
+                        <span className='item__results'>{duration}</span>
+                    </div>
+                    <div className='status__item'>
+                        <h3 className='item__title'>Number of recorded samples</h3>
+                        <span className='item__results'>{recorded_samples}</span>
+                    </div>
+                    <div className='status__item'>
+                        <h3 className='item__title'>Number of remaining samples</h3>
+                        <span className='item__results'>{unrecorded_samples}</span>
+                    </div>
+                    <div className='status__item'>
+                        <h3 className='item__title'>Total number of samples</h3>
                     <span className='item__results'>{all_samples}</span>
-                </div>
-                <div className='status__item'>
-                    <h3 className='item__title'>Completion</h3>
-                    <span className='item__results'>{totalSamples}%</span>
-                </div>
-            </section>
+                    </div>
+                    <div className='status__item'>
+                        <h3 className='item__title'>Completion</h3>
+                        <span className='item__results'>{totalSamples.toFixed(2)}%</span>
+                    </div>
+                </section>
+            </div>
         </>
     )
 }

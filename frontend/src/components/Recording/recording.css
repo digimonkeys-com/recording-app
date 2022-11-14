@@ -1,24 +1,20 @@
 .recording__wrap {
     display: flex;
     flex-direction: column;
-
     position: relative;
 }
 
 .recording {
     flex-grow: 1;
-    
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    padding: 5rem;
+    padding: 5rem 0;
 }
 
 .recording__textarea {
     min-width: 30%;
-    max-width: 60%;
-
+    max-width: 90%;
     margin-top: 3rem;
     border: 1px solid #ffeba7;
     border-radius: 2rem;
@@ -29,9 +25,7 @@
     display: inline-block;
     padding: 2rem;
     font-size: 2rem;
-    
     text-align: justify;
-    /* word-break: break-all; */
 }
 
 .recording__button--wrap {
@@ -40,7 +34,41 @@
     align-items: center;
 }
 
-.recording__button {
+.recording__button,
+.play__button,
+.send__button  {
     margin: 4rem 2rem;
     width: 50px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.recording__button--on {
+    filter: invert(12%) sepia(72%) saturate(7500%) hue-rotate(96deg) brightness(96%) contrast(101%);
+}
+
+.recording__button--off {
+    filter: invert(11%) sepia(76%) saturate(7498%) hue-rotate(344deg) brightness(105%) contrast(107%);
+}
+
+.play__button,
+.send__button {
+    filter: invert(12%) sepia(72%) saturate(7500%) hue-rotate(96deg) brightness(96%) contrast(101%);
+}
+
+.play__button:disabled,
+.send__button:disabled,
+.recording__button:disabled {
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(1deg) brightness(103%) contrast(103%);
+    opacity: 0.3;
+}
+
+@media(min-width: 1200px) {
+    .recording {
+        padding: 5rem 5rem;
+    }
+    .recording__textarea {
+        max-width: 60%;
+    }
 }

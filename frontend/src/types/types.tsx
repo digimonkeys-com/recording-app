@@ -63,3 +63,11 @@ export interface SampleData {
     "transcription": string;
     "id": number;
 }
+
+export interface MediaRecorderData {
+    startRecording: () => void;
+    stopRecording: () => void;
+    playRecord: () => void;
+    prepereRecord: () => Blob;
+    clearMediaRecorderState: () => void;
+}

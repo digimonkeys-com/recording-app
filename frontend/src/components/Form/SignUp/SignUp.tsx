@@ -22,10 +22,11 @@ const SignUp = (props: SignUpProps): JSX.Element => {
         const password = (document.querySelector('#signUp-password') as HTMLInputElement).value;
         const name = (document.querySelector('#signUp-name') as HTMLInputElement).value;
 
-        const userData = new FormData();
-        userData.append('email', email);
-        userData.append('password', password);
-        userData.append('name', name);
+        const userData = new URLSearchParams({
+            'email': email,
+            'password': password,
+            'name': name,
+        });
 
         const signedUpUserData = await userSignUp(userData);
 

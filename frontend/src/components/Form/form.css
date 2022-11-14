@@ -78,7 +78,7 @@
 
 .form__panels {
     position: relative;
-    width: 44rem;
+    max-width: 44rem;
     height: 40rem;
     transform-style: preserve-3d;
     perspective: 80rem;
@@ -272,14 +272,6 @@
   box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
 }
 
-.signIn__button:hover,
-.signUp__button:hover {  
-  background-color: #102770;
-  color: #ffeba7;
-  box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
-}
-
-
 .signIn__input--wrap input::placeholder,
 .signUp__input--wrap input::placeholder  {
     color: #c4c3ca;
@@ -292,3 +284,11 @@
     opacity: 0;
     transition: all 200ms linear;
 }
+
+@media(min-width: 1200px){
+    .signIn__button:hover,
+    .signUp__button:hover {  
+      background-color: #102770;
+      color: #ffeba7;
+      box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
+}}

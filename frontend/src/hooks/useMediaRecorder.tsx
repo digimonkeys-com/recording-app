@@ -1,15 +1,17 @@
 import React from 'react';
-import fixWebmDuration from "fix-webm-duration";
 
-const useMediaRecorder = () => {
+import { MediaRecorderData } from '../types/types'
+import { detectBrowserName } from '../helpers/browserDetect'
+
+const useMediaRecorder = (): MediaRecorderData => {
     const [mediaRecorder, setMediaRecorder] = React.useState<MediaRecorder>(new MediaRecorder(new MediaStream()));
-    const [chunks, setChunks] = React.useState<BlobPart[]>([]);
-    const [duration, setDuration] = React.useState(0);
-    const [startTime, setStartTime] = React.useState(0);
-    const [audioBlob, setAudioBlob] = React.useState(new Blob());
+    const [audioBlob, setAudioBlob] = React.useState<Blob>(null);
     const [audioUrl, setAudioUrl] = React.useState('');
 
     const constraints = { audio: true, video: false };
+    const browserName = detectBrowserName();
+
+    console.log(browserName)
 
     React.useEffect(() => {
         recorderInit();
@@ -20,35 +22,36 @@ const useMediaRecorder = () => {
 
         navigator.mediaDevices.getUserMedia(constraints)
             .then((stream) => {
-                const newMediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+                let newChunks: BlobPart[] = []
+                let newMediaRecorder: MediaRecorder;
+
+                if (browserName === 'firefox') {
+                    newMediaRecorder = new MediaRecorder(stream, {mimeType:'audio/ogg;codecs=opus'})
+                } else if(browserName === 'safari') {
+                    newMediaRecorder = new MediaRecorder(stream, {mimeType:'audio/mp4;codecs=opus'})
+                } else {
+                    newMediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+                }
 
                 newMediaRecorder.addEventListener('dataavailable', event => {
                     const data = event.data;
 
-                    if (data && data.size > 0) {
-                        let newChunks = chunks;
-                        newChunks.push(data);
-                        setChunks(newChunks);
-                    }
+                    if (data && data.size > 0) newChunks.push(data);
                 });
 
                 newMediaRecorder.addEventListener('stop', () => {
-                    const durationTime = Date.now() - startTime;
-                    setDuration(durationTime);
-
-                    const newBlob = new Blob(chunks, { type: newMediaRecorder.mimeType });
+                    const newBlob = new Blob(newChunks, { type: newMediaRecorder.mimeType });
                     const newAudioUrl = URL.createObjectURL(newBlob);
                     setAudioBlob(newBlob);
                     setAudioUrl(newAudioUrl);
+                    newChunks = []
                 })
-
                 setMediaRecorder(newMediaRecorder);
             });
     };
 
     const startRecording = (): void => {
         mediaRecorder.start();
-        setStartTime(Date.now());
     }
 
     const stopRecording = (): void => {
@@ -62,17 +65,11 @@ const useMediaRecorder = () => {
 
     const clearMediaRecorderState = (): void => {
         setAudioUrl('');
-        setAudioBlob(new Blob());
-        setChunks([]);
-        setDuration(0);
-        setStartTime(0);
+        setAudioBlob(null);
     }
 
-    const prepereRecord = async (): Promise<Blob> => {
-        let blob = audioBlob;
-        let newDuration = duration;
-        const fixedBlob = await fixWebmDuration(blob, newDuration);
-        return fixedBlob;
+    const prepereRecord = (): Blob => {
+        return audioBlob;
     }
 
     return { startRecording, stopRecording, playRecord, prepereRecord, clearMediaRecorderState }

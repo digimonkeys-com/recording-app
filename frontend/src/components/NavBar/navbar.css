@@ -8,6 +8,7 @@
     background-size: 100%;
 
     border-bottom: 0.1rem solid #ffeba7;
+
 }
 
 .navBar__title {
@@ -29,8 +30,9 @@
     margin-left: 2rem;
 }
 
-.navBar__list {
-    display: flex;
+.navBar__list--desktop,
+.navBar__list--mobile {
+    display: none;
     justify-content: flex-end;
     align-items: center;
     flex-grow: 1;
@@ -60,4 +62,26 @@
 
 .sign--in--out:hover {
     background-color: #102770;
+}
+
+.navBar__list--mobile {
+    display: flex;
+}
+
+.navBar__list--mobile img {
+    width: 30px;
+}
+
+.sign--in--out--mobile {
+    padding-left: 50px;
+}
+
+@media(min-width: 1200px) {
+    .navBar__list--mobile {
+        display: none;
+    }
+
+    .navBar__list--desktop {
+        display: flex;
+    }
 }

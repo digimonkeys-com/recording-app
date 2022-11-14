@@ -22,9 +22,10 @@ const SignIn = (props: SignInProps): JSX.Element => {
         const email = ( document.querySelector('#signIn-email') as HTMLInputElement ).value;
         const password = ( document.querySelector('#signIn-password') as HTMLInputElement ).value;
 
-        const userData = new FormData();
-        userData.append('username', email);
-        userData.append('password', password);
+        const userData = new URLSearchParams({
+            'username': email,
+            'password': password,
+        });
 
         const signedInUserData = await userSignIn(userData)
 

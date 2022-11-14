@@ -3,6 +3,19 @@
   text-align: center;
 }
 
+.uploader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4rem;
+}
+
+.uploader__input {
+  padding: 2rem;
+  text-align-last: center;
+}
+
 .upload__button {
     border-radius: 4px;
     height: 44px;
@@ -35,4 +48,12 @@
   background-color: #102770;
   color: #ffeba7;
   box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
+}
+
+@media(min-width: 1200px) {
+  .upload__button:hover {  
+    background-color: #102770;
+    color: #ffeba7;
+    box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
+  }
 }

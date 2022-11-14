@@ -40,7 +40,7 @@ def convert_and_save_file(id_: str, browser: str, file: bytes, user):
         raise HTTPException(status_code=400, detail="Unsupported user agent")
     
     try:
-        duration = librosa.get_duration(filename=temp_file_location)
+        duration = librosa.get_duration(filename=final_file_location)
     except Exception as E:
         os.remove(temp_file_location)
         raise HTTPException(status_code=400, detail="Broken file")
