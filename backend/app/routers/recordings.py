@@ -33,7 +33,7 @@ async def store_recorded_sample(
         os.mkdir("data/temp")
 
     recording = Recording.get_recording_by_user_id_and_sample_id(db, id_, current_user)
-    filename, location, duration = convert_and_save_file(id_, browser, file, current_user)
+    filename, location, duration = convert_and_save_file(str(id_), browser, file, current_user)
 
     if recording:
         current_user.total_duration += duration
