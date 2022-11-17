@@ -7,8 +7,7 @@ import subprocess
 import os
 
 
-def convert_and_save_file(id_: int, browser: str, file: bytes, user):
-
+def convert_and_save_file(id_: str, browser: str, file: bytes, user):
     dir_ = f"data/{user.id}/{id_}"
 
     try:
@@ -39,13 +38,13 @@ def convert_and_save_file(id_: int, browser: str, file: bytes, user):
         sf.write(final_file_location, data, samplerate)
     else:
         raise HTTPException(status_code=400, detail="Unsupported user agent")
-    
+
     try:
-        duration = librosa.get_duration(filename=temp_file_location)
+        duration = librosa.get_duration(filename=final_file_location)
     except Exception as E:
         os.remove(temp_file_location)
         raise HTTPException(status_code=400, detail="Broken file")
-        
+
     os.remove(temp_file_location)
     return final_filename, final_file_location, duration
 
