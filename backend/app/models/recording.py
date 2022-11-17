@@ -23,6 +23,3 @@ class Recording(Base):
             Recording.sample_id == sample_id,
             Recording.user_id == user.id
         ).first()
-
-    def to_dict(self):
-        return {"id": self.id, "sample_id": self.sample_id, 'user_id': self.user_id, 'recordings': self.recordings}

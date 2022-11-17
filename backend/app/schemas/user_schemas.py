@@ -23,16 +23,11 @@ class ResetPassword(BaseConfig):
 
 class User(UserBase):
     name: str
-    user_id: UUID
-    image_URL: Optional[str]
+    id: UUID
 
 
-class UserFunctions(User):
-    is_active: bool
-    is_admin: bool
-
-
-class UserDetail(UserFunctions):
+class UserDetail(User):
+    total_duration: int
     updated_at: Optional[datetime]
     created_at: Optional[datetime]
 
@@ -47,4 +42,4 @@ class UserCreate(UserBase):
 
 
 class UserPagination(CustomPagination):
-    records: list[UserFunctions] = []
+    records: list[User] = []

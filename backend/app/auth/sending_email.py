@@ -1,17 +1,18 @@
-import os
-
+from settings import get_settings
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 
+app_settings = get_settings()
+
 conf = ConnectionConfig(
-    MAIL_USERNAME=os.getenv('MAIL_USERNAME'),
-    MAIL_PASSWORD=os.getenv('MAIL_PASSWORD'),
-    MAIL_FROM=os.getenv('MAIL_FROM'),
-    MAIL_PORT=os.getenv('MAIL_PORT'),
-    MAIL_SERVER=os.getenv('MAIL_SERVER'),
-    MAIL_TLS=os.getenv('MAIL_TLS'),
-    MAIL_SSL=os.getenv('MAIL_SSL'),
-    USE_CREDENTIALS=os.getenv('USE_CREDENTIALS'),
-    VALIDATE_CERTS=os.getenv('VALIDATE_CERTS')
+    MAIL_USERNAME=app_settings.mail_username,
+    MAIL_PASSWORD=app_settings.mail_password,
+    MAIL_FROM=app_settings.mail_from,
+    MAIL_PORT=app_settings.mail_port,
+    MAIL_SERVER=app_settings.mail_server,
+    MAIL_TLS=app_settings.mail_tls,
+    MAIL_SSL=app_settings.mail_ssl,
+    USE_CREDENTIALS=app_settings.use_credentials,
+    VALIDATE_CERTS=app_settings.validate_certs
 )
 
 

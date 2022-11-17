@@ -2,7 +2,6 @@
 fastapi==0.79.0
 uvicorn==0.18.2
 PyYAML==6.0
-python-multipart==0.0.5
 
 # audio
 MoviePy==1.0.3
@@ -33,3 +32,5 @@ python-multipart==0.0.5
 # pydantic validation
 email-validator
 
+# loading .env
+python-dotenv==0.20.0
