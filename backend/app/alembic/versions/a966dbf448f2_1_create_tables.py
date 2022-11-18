@@ -5,9 +5,7 @@ Revises:
 Create Date: 2022-11-16 14:02:45.801167
 
 """
-import uuid
 from alembic import op
-from sqlalchemy.dialects import postgresql
 import sqlalchemy as sa
 import sqlalchemy_utils
 from auth.hash import Hash
@@ -43,7 +41,7 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     users_table = op.create_table('user',
-    sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('email', sqlalchemy_utils.types.email.EmailType(length=255), nullable=False),
     sa.Column('password', sa.Text(), nullable=True),
     sa.Column('name', sa.String(length=32), nullable=False),
@@ -58,7 +56,6 @@ def upgrade() -> None:
         users_table,
         [
             {
-                "id": uuid.UUID("00000000-0000-4000-a000-000000000000"),
                 "email": "admin@admin.com",
                 "password": Hash.get_password_hash("admin"),
                 "name": "Admin",

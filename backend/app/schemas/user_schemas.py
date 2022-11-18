@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import Optional, Any
-from uuid import UUID
 from pydantic import EmailStr
 
 from auth.hash import Hash
@@ -23,7 +22,7 @@ class ResetPassword(BaseConfig):
 
 class User(UserBase):
     name: str
-    id: UUID
+    id: int
 
 
 class UserDetail(User):
