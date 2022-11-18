@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 from fastapi import File, Form
 
 import os
-import uuid
+from datetime import datetime
+from secrets import token_urlsafe
 
 from db.database import get_db
 from models.recording import Recording
@@ -57,14 +58,14 @@ async def upload_new_sample(
     if not os.path.exists(temp_dir):
         os.makedirs(temp_dir)
 
-    filename = f"{current_user.name}-{uuid.uuid4()}" + file.filename[-4:]
+    filename = f"{datetime.now().strftime('%d-%m-%Y')}-{token_urlsafe(8)}" + file.filename[-4:]
 
     with open(temp_dir + filename, "wb") as my_file:
         content = await file.read()
         my_file.write(content)
         my_file.close()
 
-    converted_file_location = convert_to_wav_and_save_file(temp_dir, filename)
+    converted_file_location = convert_to_wav_and_save_file(temp_dir, filename, current_user.id)
     os.remove(temp_dir + filename)
 
     return {"info": f"file saved at '{converted_file_location}'"}

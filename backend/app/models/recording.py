@@ -6,7 +6,7 @@ from db.database import Base
 class Recording(Base):
     __tablename__ = "recording"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    sample_id = Column(Integer, nullable=False)
+    sample_id = Column(Integer)
     user_id = Column(Integer, nullable=False)
     is_recorded = Column(Boolean)
 

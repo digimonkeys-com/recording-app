@@ -49,9 +49,9 @@ def convert_and_save_file(id_: str, browser: str, file: bytes, user):
     return final_filename, final_file_location, duration
 
 
-def convert_to_wav_and_save_file(filepath: str, filename: str):
+def convert_to_wav_and_save_file(filepath: str, filename: str, username: int):
     extension_list = ("mp4", "mp3", "m4a")
-    dir_ = f"data/"
+    dir_ = f"data/{username}/"
     if not os.path.exists(dir_):
         os.mkdir(dir_)
 
