@@ -6,7 +6,7 @@ from db.database import Base
 class Recording(Base):
     __tablename__ = "recording"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    sample_id = Column(Integer, nullable=False)
+    sample_id = Column(Integer)
     user_id = Column(Integer, nullable=False)
     is_recorded = Column(Boolean)
 
@@ -23,6 +23,3 @@ class Recording(Base):
             Recording.sample_id == sample_id,
             Recording.user_id == user.id
         ).first()
-
-    def to_dict(self):
-        return {"id": self.id, "sample_id": self.sample_id, 'user_id': self.user_id, 'recordings': self.recordings}

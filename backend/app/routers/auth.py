@@ -1,23 +1,24 @@
-from fastapi import APIRouter, Depends, status, HTTPException, Form
+from fastapi import APIRouter, Depends, status, HTTPException, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from datetime import timedelta
-import os
-
+from typing import Any
 from secrets import token_urlsafe
 
-from schemas import token_schemas, user_schemas, info
+from schemas import token_schemas, user_schemas, info_schemas
 from db.database import get_db
 from auth.jwt_helper import authenticate_user, create_token, ACCESS_TOKEN_EXPIRE_MINUTES
 from exceptions.exceptions import CredentialsException
-from models.user_model import User, ResetPassword
+from models.user import User, ResetPassword
 from auth.sending_email import send_email_reset_password
 from auth.hash import Hash
-from routers.samples import create_recordings_for_user
+from routers.recordings import create_recordings_for_user
+from settings import get_settings
 
-
-router = APIRouter(prefix=f"{os.getenv('ROOT_PATH')}/v1", tags=["Auth"])
+app_settings = get_settings()
+router = APIRouter(prefix=f"{app_settings.root_path}", tags=["Auth"])
 
 
 @router.post(
@@ -36,44 +37,37 @@ async def login_for_access_token(
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     create_recordings_for_user(db, user)
-    return {"access_token": access_token, 'user_id': user.id}
+    return {"access_token": access_token}
 
-@router.put(
-    '/register',
-    response_model=token_schemas.Token
+
+@router.post(
+    "/register",
+    response_model=user_schemas.User | Any,
+    status_code=status.HTTP_201_CREATED
 )
 async def register(
-        email: str = Form(),
-        password: str = Form(),
-        name: str = Form(),
-        db: Session = Depends(get_db)
+        response: Response,
+        request: user_schemas.UserCreate,
+        db: Session = Depends(get_db),
 ):
-
-    passwd_hash = Hash.get_password_hash(password)
-
-    user = User(email=email, password=passwd_hash, name=name)
+    created_user = User(**request.dict())
     try:
-        db.add(user)
+        db.add(created_user)
         db.commit()
-    except Exception as e:
-        print(e)
-        return {"access_token": "", 'user_id': -1}
-
-    user = authenticate_user(email, password, db)
-    if not user:
-        raise CredentialsException
-    access_token = create_token(
-        data={"sub": user.email},
-        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    )
-    create_recordings_for_user(db, user)
-    return {"access_token": access_token, 'user_id': user.id}
+        db.refresh(created_user)
+        return created_user
+    except IntegrityError as e:
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return {
+            "message": "Email is already used, try again.",
+            "error": e
+        }
 
 
 @router.post(
     '/forgot-password',
     status_code=status.HTTP_200_OK,
-    response_model=info.Info
+    response_model=info_schemas.Info
 )
 async def forgot_password(
         request: user_schemas.ForgotPassword,
@@ -83,7 +77,7 @@ async def forgot_password(
     if not user:
         pass
     else:
-        token_in_db = ResetPassword.get_unused_by_email(db, user.email).first()
+        token_in_db = ResetPassword.get_unused_by_email(db, user.email)
         if token_in_db:
             reset_code = token_in_db.reset_code
         else:
@@ -102,14 +96,14 @@ async def forgot_password(
 @router.put(
     '/reset-password',
     status_code=status.HTTP_202_ACCEPTED,
-    response_model=info.Info
+    response_model=info_schemas.Info
 
 )
 async def reset_password(
         request: user_schemas.ResetPassword,
         db: Session = Depends(get_db)
 ):
-    reset_token = ResetPassword.get_unused_by_reset_code(db, request.reset_password_token).first()
+    reset_token = ResetPassword.get_unused_by_reset_code(db, request.reset_password_token)
     if not reset_token:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

@@ -1,13 +1,13 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 import soundfile as sf
 import librosa
+from pydub import AudioSegment
 
 import subprocess
 import os
 
 
 def convert_and_save_file(id_: str, browser: str, file: bytes, user):
-
     dir_ = f"data/{user.id}/{id_}"
 
     try:
@@ -38,12 +38,30 @@ def convert_and_save_file(id_: str, browser: str, file: bytes, user):
         sf.write(final_file_location, data, samplerate)
     else:
         raise HTTPException(status_code=400, detail="Unsupported user agent")
-    
+
     try:
         duration = librosa.get_duration(filename=final_file_location)
     except Exception as E:
         os.remove(temp_file_location)
         raise HTTPException(status_code=400, detail="Broken file")
-        
+
     os.remove(temp_file_location)
     return final_filename, final_file_location, duration
+
+
+def convert_to_wav_and_save_file(filepath: str, filename: str, username: int):
+    extension_list = ("mp4", "mp3", "m4a")
+    dir_ = f"data/{username}/"
+    if not os.path.exists(dir_):
+        os.mkdir(dir_)
+
+    for extension in extension_list:
+        if filename.lower().endswith(extension):
+            audio = AudioSegment.from_file(filepath + filename, extension)
+            new_audio = audio.set_frame_rate(frame_rate=16000)
+            new_filename = f"{dir_}{filename.split('.')[0]}.wav"
+            new_audio.export(new_filename, format="wav")
+            return new_filename
+
+    os.remove(filepath + filename)
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unsupported file extension.")
