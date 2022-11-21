@@ -1,3 +1,6 @@
+app/*.json
+app-gcp-run/*.json
+
 labels.csv
 data/
 ### Python template
