@@ -1,0 +1,41 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from routers import samples, auth, recordings, users
+from settings import get_settings
+from db.database import Base, pool
+
+app_settings = get_settings()
+
+
+def create_app():
+    # Settings
+    settings = get_settings()
+
+    # FastAPI
+    app = FastAPI(
+        docs_url=f"{settings.root_path}/docs",
+        version="1.0.0",
+        openapi_url=f"{settings.root_path}"
+    )
+    app.include_router(samples.router)
+    app.include_router(auth.router)
+    app.include_router(recordings.router)
+    app.include_router(users.router)
+
+    # CORS middleware
+    origins = [
+        "*"
+    ]
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    # Create db tables
+    Base.metadata.create_all(bind=pool)
+
+    return app
