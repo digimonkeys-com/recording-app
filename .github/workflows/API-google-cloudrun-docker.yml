@@ -37,6 +37,7 @@ jobs:
         with:
           name: "credentials-recording-app-storage.json"
           json: ${{ secrets.CREDENTIALS_STORAGE }}
+          dir: 'backend/app-gcp-run/'
        
       - name: Login
         uses: google-github-actions/setup-gcloud@v0
