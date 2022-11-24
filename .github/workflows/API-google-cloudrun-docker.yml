@@ -3,8 +3,12 @@ name: Build and Deploy API to Cloud Run
 on:
   push:
     branches: [ "master" ]
+    paths:
+      - 'backend/app-gcp-run/**'
   pull_request:
     branches: [ "master" ]
+    paths:
+      - 'backend/app-gcp-run/**'
 
 defaults:
   run:
