@@ -30,6 +30,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        
+      - name: Create Storage Credentials JSON
+        id: create-json
+        uses: jsdaniell/create-json@v1.2.1
+        with:
+          name: "credentials-recording-app-storage.json"
+          json: ${{ secrets.CREDENTIALS_STORAGE }}
        
       - name: Login
         uses: google-github-actions/setup-gcloud@v0
@@ -44,7 +51,6 @@ jobs:
       - name: Build and Push Container
         run: |-
           echo "${{ secrets.ENV }}" > .env
-          echo "${{ secrets.CREDENTIALS_STORAGE }}" > credentials-recording-app-storage.json
           docker build -t "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }}" ./
           docker push "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }}"
       - name: Deploy to Cloud Run
