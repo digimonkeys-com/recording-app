@@ -1,0 +1,61 @@
+name: Build and Deploy API to Cloud Run
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - 'backend/app-gcp-run/*'
+  pull_request:
+    branches: [ "master" ]
+    paths:
+      - 'backend/app-gcp-run/*'
+
+defaults:
+  run:
+    shell: bash
+    working-directory: backend/app-gcp-run/
+
+env:
+  PROJECT_ID: mlai-359207
+  SERVICE: recording-app
+  REGION: us-central1
+
+jobs:
+  Build_and_Deploy:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+       
+      - name: Login
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ env.GCP_PROJECT_ID }}
+          service_account_email: ${{ secrets.GCP_EMAIL }}
+          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+          
+      - name: Configure Docker
+        run: gcloud auth configure-docker --quiet 
+
+      - name: Build and Push Container
+        run: |-
+          echo "${{ secrets.ENV }}" > .env
+          echo "${{ secrets.CREDENTIALS_STORAGE }}" > credentials-recording-app-storage.json
+          docker build -t "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }}" ./
+          docker push "gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }}"
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v0
+        with:
+          service: ${{ env.SERVICE }}
+          region: ${{ env.REGION }}
+          project_id: ${{ env.PROJECT_ID }}
+          image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }}
+          flags: '--max-instances 1 --vpc-connector recording-app-connector'
+
+      - name: Show Output
+        run: echo ${{ steps.deploy.outputs.url }}
