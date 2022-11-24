@@ -23,7 +23,7 @@ async def read_user(
         db: Session = Depends(get_db),
         current_user: user_schemas.User = Depends(get_current_user),
 ):
-    user = User.get_user_by_id(db, str(current_user.id))
+    user = User.get_user_by_id(db, current_user.id)
     if not user:
         raise UserNotFound(str(current_user.id))
     return user

@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routers import samples, auth, recordings, users
 from settings import get_settings
-from db.database import Base, pool
 
 app_settings = get_settings()
 
@@ -34,8 +33,5 @@ def create_app():
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-    # Create db tables
-    Base.metadata.create_all(bind=pool)
 
     return app

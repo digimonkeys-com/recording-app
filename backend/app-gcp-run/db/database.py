@@ -14,6 +14,8 @@ postgres_host = app_settings.postgres_host
 postgres_port = app_settings.postgres_port
 
 
+SQLALCHEMY_DATABASE_URL = f"postgresql+pg8000://" \
+                          f"{postgres_user}:{postgres_password}@{postgres_host}:{postgres_port}/{postgres_db}"
 pool = create_engine(
     URL.create(
         drivername="postgresql+pg8000",
