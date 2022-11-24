@@ -26,7 +26,6 @@ from models.sample import Sample
 from settings import get_settings
 
 app_settings = get_settings()
-
 target_metadata = Base.metadata
 config.set_main_option('sqlalchemy.url', f"postgresql+pg8000://{app_settings.postgres_user}:"
                                          f"{app_settings.postgres_password}@{app_settings.postgres_host}:"
