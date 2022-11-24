@@ -4,7 +4,6 @@ from settings import get_settings
 
 app_settings = get_settings()
 
-
 CREDENTIALS_FILE = app_settings.credentials_file
 BUCKET_NAME = app_settings.bucket_name
 
